@@ -1,6 +1,5 @@
 class Coffee {
 
-  // Properties
   type: string;
   rating: number;
   notes: string;
