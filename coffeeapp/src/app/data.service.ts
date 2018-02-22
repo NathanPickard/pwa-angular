@@ -8,7 +8,14 @@ export class DataService {
 
   constructor(private http: Http) { }
 
-  public endpoint = "http://localhost:3000/";
+  public endpoint = "http://localhost:3000";
+
+  get(coffeeId: string, callback) {
+    this.http.get(`${this.endpoint}/coffees/${coffeeId}`)
+      .subscribe(response => {
+        callback(response.json());
+      });
+  }
 
   getList(callback) {
     // const list = [
@@ -16,7 +23,7 @@ export class DataService {
     //   new Coffee("Caramel Americano", "Starcoffee", new PlaceLocation("Gran Via 34", "Madrid"))
     // ];
     // callback(list);
-    this.http.get(`${this.endpoint}coffees`)
+    this.http.get(`${this.endpoint}/coffees`)
       .subscribe(response => {
         console.log(response.json());
         callback(response.json());
@@ -32,7 +39,7 @@ export class DataService {
         });
     } else {
       // it's an insert
-      this.http.post(`${this.endpoint}/coffees}`, coffee)
+      this.http.post(`${this.endpoint}/coffees`, coffee)
         .subscribe(response => {
           callback(true);
         });

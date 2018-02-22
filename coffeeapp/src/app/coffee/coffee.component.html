@@ -38,7 +38,7 @@
     <mat-slider max="10" thumbLabel name="rating" [(ngModel)]="coffee.rating" tickInterval="1"></mat-slider>
 
     <mat-card-subtitle>
-      <mat-slide-toggle #tastingSelector
+      <mat-slide-toggle #tastingSelector [checked]="tastingEnabled"
       (change)="tastingRatingChanged(tastingSelector.checked)">Tasting Ratings</mat-slide-toggle>
     </mat-card-subtitle>
 
@@ -72,7 +72,7 @@
 
   <mat-card>
     <button mat-raised-button (click)="cancel()">Cancel</button>
-    <button mat-raised-button color="accent" (click)="save">Save</button>
+    <button mat-raised-button color="accent" (click)="save()">Save</button>
   </mat-card>
 
 </form>
