@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
+import { ServiceWorkerModule, SwPush } from '@angular/service-worker';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,9 @@ import { MatSnackBar } from '@angular/material';
 })
 export class AppComponent {
 
-  constructor(private snackBar: MatSnackBar) {
+  constructor(private snackBar: MatSnackBar,
+    private ngsw: ServiceWorkerModule,
+    private swPush: SwPush) {
 
   }
 
@@ -18,14 +21,45 @@ export class AppComponent {
     } else {
       (document.querySelector("body") as any).style = "filter: grayscale(1)";
     }
+  }
 
+  subscribeToPush() {
+    Notification.requestPermission(permission => {
+      if (permission === "granted") {
+        // this.ngsw.registerForPush({ applicationServerKey: "replace-with-your-public-key" })
+        // this.swPush.requestSubscription({ serverPublicKey: "replace-with-your-public-key" })
+        //   .then(PushSubscription => {
+        //     console.log(ServiceWorkerRegistration);
+        //   })
+        //   .subscribe((registration: NgPushRegistration) => {
+        //     console.log(registration);
+        // })
+      }
+    })
   }
 
   ngOnInit() {
+
+    // Checking SW Update Status
+    this.ngsw.updates.subscribe(update => {
+      if (update.type == 'pending') {
+        const sb = this.snackBar.open("There is an update availalbe", "Install Now", { duration: 4000 });
+        sb.onAction().subscribe(() => {
+          this.ngsw.activateUpdate(update.version).subscribe(event => {
+            console.log("The App was updated");
+            location.reload();
+          })
+        });
+      }
+    });
+    this.ngsw.checkForUpdate();
+
+    // Checking Network Status
     this.updateNetworkStatusUI();
     window.addEventListener("online", this.updateNetworkStatusUI);
     window.addEventListener("offline", this.updateNetworkStatusUI);
 
+    // Checking Installation Status
     if ((navigator as any).standalone == false) {
       // This is an iOS device and we are in the browser
       this.snackBar.open("You can add this PWA to the Home Screen", "", { duration: 3000 });

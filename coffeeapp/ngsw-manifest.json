@@ -41,5 +41,9 @@
         }
       }
     ]
+  },
+  "push": {
+    "showNotification": true,
+    "backgroundOnly": false
   }
 }
